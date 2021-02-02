@@ -1,25 +1,350 @@
-#include <iostream>
+ï»¿#include <iostream>
+#include <list>
+#include <math.h>
+//#include <string.h>
+
 
 using namespace std;
 
+void show_menu();
+double calculate_with_interest(int amount, int percent, int years);
+int get_input(string name);
+void handle_simple_interest();
+void handle_advanced_interest();
+void handle_table();
 
 int main() {
 
-	cout << "Drehkreuzsteuerung: "; cout << endl;
+	char repeat = 'J';
 
-	for (int i = 30; i > 0; i--) {
-		cout << i; cout << " Plaetze übrig."; cout << endl;
+	while (repeat == 'J' || repeat == 'j') {
+		system("cls");
+
+		show_menu();
+
+		cout << "Nochmal? (J,N)" << endl;
+
+		cin >> repeat;
 	}
 
-	cout << "Aus die Maus!";
+	return 0;
 }
 
+void show_menu() {
+	cout << "1: Sparplan berechnen" << endl;
+	cout << "2: Sparplan (jaehrlich)" << endl;
+
+	char option = ' ';
+
+	do {
+
+		cout << "Bitte Wert eingeben: (1,2,3)" << endl;
+		cin >> option;
+
+	} while (option != '1' && option != '2' && option != '3');
+
+
+	switch (option)
+	{
+	case '1':
+		handle_simple_interest();
+		break;
+	case '2':
+		handle_advanced_interest();
+		break;
+	case '3':
+		handle_table();
+		break;
+	default:
+		//Gibts nicht
+		break;
+	}
+}
+
+double calculate_with_interest(int amount, int percent, int years) {
+	return (double)amount * pow((1.0 + ((double)percent / 100.0)), (double)years);
+}
+
+int get_input(string name) {
+	cout << "Bitte " << name << " Eingeben:" << endl;
+
+	int val = 0;
+	cin >> val;
+
+	return val;
+
+}
+
+void handle_simple_interest() {
+	int amount = get_input("Start Kapital");
+	int percent = get_input("Zinssatz");
+	int years = get_input("Laufzeit");
+
+	float result = calculate_with_interest(amount, percent, years);
+
+	cout << endl << endl;
+	cout << "Nach " << years << " Jahren: " << result << endl << endl;
+}
+
+void handle_advanced_interest() {
+	int amount = get_input("Start Kapital");
+	int percent = get_input("Zinssatz");
+	int years = get_input("Laufzeit");
+
+	cout << endl << endl;
+
+	for (int i = 1; i <= years; i++)
+	{
+		double result = calculate_with_interest(amount, percent, i);
+		cout << "Nach " << i << " Jahren: " << result << endl;
+	}
+
+	cout << endl << endl;
+}
+
+void handle_table() {
+	double amount = get_input("Kreditsumme");
+	int percent = get_input("Zinssatz");
+	int years = get_input("Laufzeit");
+
+	double yearly_payoff = amount / years;
+
+	double total_interest = 0.0;
+
+	cout << "Ergebnis: Zinsen, Tilgung, Gesamt zu zahlen, Restschuld" << endl << endl;
+
+	for (int i = 1; i <= years; i++)
+	{
+		//JÃ¤hrliche Zinsen
+		double interest = (amount / 100) * percent;
+
+		//Zinsen gesamt dazurechnen
+		total_interest += interest;
+
+		amount = amount - yearly_payoff;
+
+		cout << "Nach dem " << i << " Jahr:       " << interest << "       " << yearly_payoff << "       " << interest + yearly_payoff << "       " << amount << endl;
+	}
+}
+
+
+//double get_untaxed_amount(double amount, double tax_in_percent);
+//double get_input(string input_name);
+//void print_to_screen(string val);
+//void print_result(double result);
+//
+//int main()
+//{
+//	print_to_screen("AUF GEHTS");
+//
+//	double amount = get_input("Wert");
+//	double tax = get_input("Steuersatz");
+//
+//	double untaxed_amount = get_untaxed_amount(amount, tax);
+//
+//	print_result(untaxed_amount);
+//}
+//
+//double get_untaxed_amount(double amount, double tax_in_percent) {
+//
+//	return (amount / (100 + tax_in_percent)) * 100;
+//}
+//
+//double get_input(string input_name) {
+//	print_to_screen(input_name);
+//
+//	double val = 0.0;
+//	cin >> val;
+//
+//	return val;
+//	
+//}
+//
+//void print_to_screen(string val) {
+//	cout << val << endl;
+//}
+//
+//
+//void print_result(double result) {
+//	cout << "Ergebnis: " << result;
+//}
+//
+//
+//
+
+
+
+
+
+//double calculate_distance(int x_user, int y_user, int x_dest, int y_dest);
+//void is_suitable(bool snow, double distance);
+//
+//
+//int main()
+//{
+//	// Wohnort
+//	int x_start = 0;
+//	int y_start = 0;
+//
+//	// Loipeneigenschaften
+//	int x_dest = 0;
+//	int y_dest = 0;
+//	bool hasSnow = false;
+//	double distance = 0;
+//
+//
+//	// ThalmÃ¤ssing
+//	cout << "Loipe Thalmaessing:" << endl;
+//	x_dest = 3;
+//	y_dest = -13;
+//	hasSnow = true;
+//
+//	is_suitable(hasSnow, calculate_distance(x_start, y_start, x_dest, y_dest));
+//
+//	// Balderschwang
+//	cout << "Loipe Balderschwang:" << endl;
+//	x_dest = -50;
+//	y_dest = -187;
+//	hasSnow = true;
+//
+//	is_suitable(hasSnow, calculate_distance(x_start, y_start, x_dest, y_dest));
+//
+//
+//	// Ochsenkopf
+//	cout << "Loipe Ochsenkopf:" << endl;
+//	x_dest = 34;
+//	y_dest = 112;
+//	hasSnow = true;
+//	is_suitable(hasSnow, calculate_distance(x_start, y_start, x_dest, y_dest));
+//
+//	// Eibach
+//	cout << "Loipe Eibach:" << endl;
+//	x_dest = 3;
+//	y_dest = -3;
+//	hasSnow = false;
+//
+//	is_suitable(hasSnow, calculate_distance(x_start, y_start, x_dest, y_dest));
+//
+//	// Oberhochstatt
+//	cout << "Loipe Oberhochstatt:" << endl;
+//	x_dest = -7;
+//	y_dest = -13;
+//	hasSnow = true;
+//
+//
+//}
+//
+//
+//
+//double calculate_distance(int x_user, int y_user, int x_dest, int y_dest)
+//{
+//	int i_delta_x = x_user - x_dest;
+//	int i_delta_y = y_user - y_dest;
+//
+//	double d_distanz = sqrt(i_delta_x * i_delta_x + i_delta_y * i_delta_y);
+//	return d_distanz;
+//}
+//
+//void is_suitable(bool snow, double distance) {
+//
+//	if (snow && distance < 15.0) {
+//		cout << "OK!" << endl;
+//	}
+//	else {
+//		cout << "NE!" << endl;
+//	}
+//}
+//
+
+
+
+//class Destination {
+//public:
+//	float destination_distance;
+//	string destination_name;
+//	bool destination_snow;
+//
+//
+//	Destination(float distance, string name, bool snow)
+//	{
+//		destination_distance = distance;
+//		destination_name = name;
+//		destination_snow = snow;
+//	}
+//
+//	bool is_suited() {
+//		if (destination_snow && destination_distance < 15.0) {
+//			return true;
+//		}
+//
+//		return false;
+//	}
+//};
+//
+//int main() {
+//
+//	list<Destination> destinations;
+//	destinations.push_back(Destination(2.1, "Name1", true));
+//	destinations.push_back(Destination(4.1, "Name2", false));
+//	destinations.push_back(Destination(32.1, "Name3", true));
+//	destinations.push_back(Destination(55.1, "Name4", false));
+//
+//	for (Destination destination : destinations) {
+//		if (destination.is_suited()) {
+//			cout << destination.destination_name << " " << "ist geeignet!" << endl;
+//		}
+//		else {
+//			cout << destination.destination_name << " " << "NICHT geeignet!" << endl;
+//		}
+//	}
+//
+//	return 0;
+//}
+//
+
+
+
+//int main() {
+//	int maxValue = 15;
+//
+//	for (int i = 0; i <= maxValue; i += 2) {
+//		cout << i << endl;
+//	}
+//
+//	cout << "------------------------------------------------" << endl << endl << endl;
+//
+//	int counter = 0;
+//	for (int i = 0; i <= maxValue; i += 2) {
+//		cout << i << " " << maxValue - counter <<  endl;
+//		counter++;
+//	}
+//
+//	
+//}
+
+
+
+//int main() {
+//
+//	cout << "Drehkreuzsteuerung: "; cout << endl;
+//
+//	for (int i = 30; i > 0; i--) {
+//		cout << i; cout << " Plaetze uebrig." << endl;
+//
+//		getchar();
+//	}
+//
+//	cout << "Aus die Maus!";
+//
+//	return 0;
+//}
+//
 
 
 
 //int main()
 //{
-//	// Variablen für Berechnung des Anhalteweges definieren und mit 0 initalisieren
+//	// Variablen fÃ¼r Berechnung des Anhalteweges definieren und mit 0 initalisieren
 //	float stopping_distance = 0;
 //
 //	float speed = 0;
@@ -256,7 +581,7 @@ int main() {
 ////	cin >> reactionTime;
 ////	cout << endl;
 ////
-////	cout << "Bitte geben Sie Ihren Verzögerungswert in m/s^2 ein: ";
+////	cout << "Bitte geben Sie Ihren VerzÃ¶gerungswert in m/s^2 ein: ";
 ////	cin >> delay;
 ////	cout << endl;
 ////	cout << "-----------------------------------------------------" << endl;
@@ -275,7 +600,7 @@ int main() {
 //
 //int main()
 //{
-//	// Variablen für Berechnung des Anhalteweges definieren und mit 0 initalisieren
+//	// Variablen fÃ¼r Berechnung des Anhalteweges definieren und mit 0 initalisieren
 //	float stopping_distance = 0;
 //
 //	float speed = 0;
@@ -292,7 +617,7 @@ int main() {
 //		cout << "------------ Bestimmung des Anhaltewegs ------------" << endl;
 //		cout << "Geben Sie Ihre Geschwindigkeit in km/h ein: "; cin >> speed;
 //		cout << "Geben Sie die Reaktionszeit in s ein: "; cin >> reaction_time;
-//		cout << "Geben Sie den Verzögerungswert in m/s^2 an (9, 7, 5 oder 3) ein: "; cin >> delay_time;
+//		cout << "Geben Sie den VerzÃ¶gerungswert in m/s^2 an (9, 7, 5 oder 3) ein: "; cin >> delay_time;
 //		cout << "----------------------------------------------------------------------------------" << endl;
 //
 //		float speedInMs = (speed * 1000) / 3600;
@@ -328,7 +653,7 @@ int main() {
 
 //int main()
 //{
-//	// Variablen für Berechnung des Anhalteweges definieren und mit 0 initalisieren
+//	// Variablen fÃ¼r Berechnung des Anhalteweges definieren und mit 0 initalisieren
 //	float stopping_distance = 0;
 //
 //	float speed = 0;
@@ -345,7 +670,7 @@ int main() {
 //		cout << "------------ Bestimmung des Anhaltewegs ------------" << endl;
 //		cout << "Geben Sie Ihre Geschwindigkeit in km/h ein: "; cin >> speed;
 //		cout << "Geben Sie die Reaktionszeit in s ein: "; cin >> reaction_time;
-//		cout << "Geben Sie den Verzögerungswert in m/s^2 an (9, 7, 5 oder 3) ein: "; cin >> delay_time;
+//		cout << "Geben Sie den VerzÃ¶gerungswert in m/s^2 an (9, 7, 5 oder 3) ein: "; cin >> delay_time;
 //		cout << "----------------------------------------------------------------------------------" << endl;
 //
 //		float speedInMs = (speed * 1000) / 3600;
