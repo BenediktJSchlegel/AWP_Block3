@@ -4,43 +4,48 @@
 
 using namespace std;
 
-void handle_player_one();
-void handle_player_two();
-
-int number = 0;
-
 int main() {
-
-	char repeat = 'J';
-
-
-	while (repeat == 'J' || repeat == 'j') {
-		system("cls");
-
-		handle_player_one();
-		handle_player_two();
-
-		cout << "Nochmal? (J,N)" << endl;
-
-		cin >> repeat;
-	}
-
-	return 0;
+	int num = 10;
+	string test(num, '_');
 }
 
-void handle_player_one() {
-
-	do {
-
-		cout << "Spieler 1: Bitte deinen Wert eingeben (1-10)! " << endl;
-		cin >> number;
-
-	} while (number > 10 || number < 1);
-
-
-
-}
-
+//void handle_player_one();
+//void handle_player_two();
+//
+//int number = 0;
+//
+//int main() {
+//
+//	char repeat = 'J';
+//
+//
+//	while (repeat == 'J' || repeat == 'j') {
+//		system("cls");
+//
+//		handle_player_one();
+//		handle_player_two();
+//
+//		cout << "Nochmal? (J,N)" << endl;
+//
+//		cin >> repeat;
+//	}
+//
+//	return 0;
+//}
+//
+//void handle_player_one() {
+//
+//	do {
+//
+//		cout << "Spieler 1: Bitte deinen Wert eingeben (1-10)! " << endl;
+//		cin >> number;
+//
+//	} while (number > 10 || number < 1);
+//
+//
+//
+//}
+//
 
 
 //void show_menu();
