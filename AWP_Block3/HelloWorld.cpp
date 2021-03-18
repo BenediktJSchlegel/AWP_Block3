@@ -4,11 +4,6 @@
 
 using namespace std;
 
-int main() {
-	int num = 10;
-	string test(num, '_');
-}
-
 //void handle_player_one();
 //void handle_player_two();
 //
