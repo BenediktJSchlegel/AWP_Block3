@@ -79,5 +79,5 @@ double calculate_distance(int x_pos, int y_pos, int x_dest, int y_dest)
 	int y_delta = y_pos - y_dest;
 
 	double distance = sqrt((x_delta * x_delta) + (y_delta * y_delta));
-	return distance;
+	return distance;	
 }
