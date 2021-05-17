@@ -10,11 +10,11 @@ namespace BikeGame
 
         static void Main(string[] args)
         {
-            var player = new Player(10, 9);
+            var player = new Player(1, 1);
             var bikes = GenerateBikes();
             _board = new Board(player, _boardExtent, bikes);
 
-            //TODO: Print Instructions
+            PrintIntro();
 
             while (true)
             {
@@ -26,6 +26,36 @@ namespace BikeGame
                 //Redraw the board
                 _board.Draw();
             }
+
+        }
+
+        private static void PrintIntro()
+        {
+            Console.WriteLine("------------------------------------------------------");
+            Console.WriteLine("BikeGame");
+            Console.WriteLine("Autor: Benedikt Schlegel");
+            Console.WriteLine("- - - - - - - - - - - - - - - - - - - - - - - - - - - -");
+            Console.WriteLine("Bewege dich mit WASD oder den Pfeiltasten.");
+
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Spieler: ");
+            Console.WriteLine("pp");
+
+            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Fahrrad: ");
+            Console.WriteLine("xx");
+
+            Console.BackgroundColor = ConsoleColor.Magenta;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write("Nächstes Fahrrad: ");
+            Console.WriteLine("cc");
+
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("------------------------------------------------------");
+
 
         }
 
@@ -99,14 +129,14 @@ namespace BikeGame
             }
         }
 
-        private static List<Bike> GenerateBikes()
+        private static BikeList GenerateBikes()
         {
-            var bikes = new List<Bike>();
+            var bikes = new BikeList();
             var rnd = new Random();
 
             for (int i = 0; i < 5; i++)
             {
-                bikes.Add(new Bike(rnd.Next(0, 25), rnd.Next(0, 25)));
+                bikes.Add(new Bike(rnd.Next(0, _boardExtent), rnd.Next(0, _boardExtent)));
             }
 
             return bikes;
@@ -118,13 +148,13 @@ namespace BikeGame
     {
         public Player Player { get; set; }
 
-        public List<Bike> Bikes { get; set; }
+        public BikeList Bikes { get; set; }
 
         public int TileExtent { get; set; }
 
         public Tile[][] Tiles { get; private set; }
 
-        public Board(Player player, int extent, List<Bike> bikes)
+        public Board(Player player, int extent, BikeList bikes)
         {
             this.Player = player;
             this.TileExtent = extent;
@@ -178,16 +208,46 @@ namespace BikeGame
                 }
             }
 
-            Tiles[Player.Position.Row][Player.Position.Column].Color = ConsoleColor.Blue;
-            Tiles[Player.Position.Row][Player.Position.Column].TextColor = ConsoleColor.White;
-            Tiles[Player.Position.Row][Player.Position.Column].Symbol = "p";
-
             foreach (Bike bike in Bikes)
             {
+                string distance = GetDistanceString(bike);
+
                 Tiles[bike.Position.Row][bike.Position.Column].Color = ConsoleColor.Green;
                 Tiles[bike.Position.Row][bike.Position.Column].TextColor = ConsoleColor.White;
-                Tiles[bike.Position.Row][bike.Position.Column].Symbol = "b";
+                Tiles[bike.Position.Row][bike.Position.Column].Symbol = distance;
             }
+
+            Tiles[Player.Position.Row][Player.Position.Column].Color = ConsoleColor.Blue;
+            Tiles[Player.Position.Row][Player.Position.Column].TextColor = ConsoleColor.White;
+            Tiles[Player.Position.Row][Player.Position.Column].Symbol = "pp";
+
+            Bike closest = Bikes.GetClosestBikeTo(Player.Position);
+
+            Tiles[closest.Position.Row][closest.Position.Column].Color = ConsoleColor.Magenta;
+            Tiles[closest.Position.Row][closest.Position.Column].TextColor = ConsoleColor.White;
+            Tiles[closest.Position.Row][closest.Position.Column].Symbol = "cc";
+        }
+
+        private string GetDistanceString(Bike bike)
+        {
+            int distance = bike.DistanceTo(Player.Position);
+            string distanceString = distance.ToString();
+
+            if (distanceString.Length > 2)
+            {
+                //String too long.
+                //Just return Max value
+                return "99";
+            }
+            
+            if(distanceString.Length == 1)
+            {
+                //String too short. Prepend "0"
+                return "0" + distanceString;
+            }
+
+            //Otherwise => all good
+            return distanceString;
         }
 
         public void Draw()
@@ -212,6 +272,29 @@ namespace BikeGame
         }
     }
 
+    class BikeList : List<Bike>
+    {
+        public Bike GetClosestBikeTo(Position position)
+        {
+            int index = 0;
+            int lowestDistance = this[0].DistanceTo(position);
+
+            for (int i = 1; i < this.Count; i++)
+            {
+                int distance = this[i].DistanceTo(position);
+
+                if (distance < lowestDistance)
+                {
+                    lowestDistance = distance;
+                    index = i;
+                }
+            }
+
+            return this[index];
+        }
+
+    }
+
     class Tile
     {
         public string Symbol { get; set; }
@@ -223,7 +306,7 @@ namespace BikeGame
         /// </summary>
         public Tile()
         {
-            Symbol = "O";
+            Symbol = "OO";
             Color = ConsoleColor.DarkGray;
             TextColor = ConsoleColor.DarkGray;
         }
@@ -240,7 +323,6 @@ namespace BikeGame
             Console.ForegroundColor = TextColor;
             Console.BackgroundColor = Color;
             Console.Write(Symbol);
-            Console.Write(Symbol);
         }
     }
 
@@ -251,6 +333,21 @@ namespace BikeGame
         public Bike(int row, int col)
         {
             this.Position = new Position(row, col);
+        }
+
+        public int DistanceTo(Position pos)
+        {
+            int rowDistance = pos.Row - this.Position.Row;
+            int colDistance = pos.Column - this.Position.Column;
+
+            //Invert values if negative
+            if (rowDistance < 0)
+                rowDistance = rowDistance * -1;
+
+            if (colDistance < 0)
+                colDistance = colDistance * -1;
+
+            return colDistance + rowDistance;
         }
     }
 
